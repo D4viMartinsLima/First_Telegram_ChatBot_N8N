@@ -1,0 +1,136 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "392817d8-7740-4213-a4fd-a09c0f59d50d",
+      "name": "Telegram Trigger",
+      "webhookId": "e150778b-5cad-4a7e-9be9-753b611d26fd",
+      "credentials": {
+        "telegramApi": {
+          "id": "tlFSD7orzFTgFaVB",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e43fdf49-36a7-4c85-9645-ca8360ca3869",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        208
+      ],
+      "id": "71f50f4c-5709-4367-86fc-edcc6625268e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "egIsmB3Y8BzK4r1i",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "a670e1ca-e93e-4170-b199-e826c119604c",
+      "name": "Send a text message",
+      "webhookId": "151e80d9-4c0d-4aa4-9ea9-7de1fb13937f",
+      "credentials": {
+        "telegramApi": {
+          "id": "tlFSD7orzFTgFaVB",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b778d1e7-0c7d-4783-af82-8c0339d90b16",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4e131d178ac76eeb85cb6e8ecb34dc5d2f169afd9eb1d4b8ef61b1eebb473819"
+  },
+  "id": "8bMXLOdSEcturrdg",
+  "tags": []
+}
